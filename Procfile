@@ -1,1 +1,1 @@
-gunicorn votiface_django.wsgi --log-file -
+web: gunicorn votiface_django.wsgi --log-file -
