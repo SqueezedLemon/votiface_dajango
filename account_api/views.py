@@ -1,3 +1,5 @@
+from ast import Return
+from pickle import TRUE
 from django.shortcuts import get_object_or_404
 from requests import request
 from rest_framework import status
@@ -54,3 +56,19 @@ def get_token(email , password):
     return {'idToken': user['idToken']}
   except:
     return False
+
+
+class CheckCitizenship(APIView):
+  def post(self, request):
+    citizenship = request.data['citizenship']
+    try:
+      age = firebase.db.child("Citizenship").child(citizenship).child("Age").get().val()
+      if age >= 18:
+        context = {'eligible': True}
+        return Response(context, status = status.HTTP_200_OK)
+      else:
+        context = {'eligible': False}
+        return Response(context, status = status.HTTP_200_OK)
+    except:
+      context = {'status': 'Citizenship invalid.'}
+      return Response(context, status = status.HTTP_403_FORBIDDEN)
